@@ -2,6 +2,7 @@
 #define PE_VECTOR_H
 #include <cstddef>
 
+
 namespace knk {
   template < class T >
   class Vector {
@@ -9,13 +10,18 @@ namespace knk {
     ~Vector();
     Vector();
 
-    bool isEmpty() const noexept;
+    bool isEmpty() const noexcept;
 
   private:
     T* data_;
     size_t size_, capacity_;
   };
 }
+template < class T >
+bool knk::Vector < T >::isEmpty() const noexcept{
+  return false;
+}
+
 template < class T >
 knk::Vector < T >::Vector():
   data_(nullptr),
