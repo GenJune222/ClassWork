@@ -4,7 +4,6 @@
 using knk::Vector;
 
 bool testConstructAndDestruct(const char ** pname) {
-  //const char * __func__ = "test1";
   * pname = __func__;
   Vector< int > v;
   return true;
@@ -13,7 +12,17 @@ bool testConstructAndDestruct(const char ** pname) {
 bool testDefaultVectorIsEmpty(const char ** pname) {
   * pname = __func__;
   Vector< int > v;
-  return v.isEmpty();
+  return v.isEmpty(); // && (!v.getSize()) <- можно, но не нужно. Старые тесты - священная корова
+}
+
+bool sizeOfEmptyVector(const char ** pname) {
+  * pname = __func__;
+  Vector< int > v;
+  return !v.getSize();
+}
+
+bool sizeOfNonEmptyVector(const char ** pname) {
+  return false;
 }
 
 int main() {
@@ -21,7 +30,9 @@ int main() {
   using case_t = std::pair< test_t, const char * >;
   case_t tests[] = {
     {testConstructAndDestruct, "Vector must be default constructable"},
-    {testDefaultVectorIsEmpty, "Default constructed vector must be empty"}
+    {testDefaultVectorIsEmpty, "Default constructed vector must be empty"},
+    {sizeOfEmptyVector, "Size of empty vector must be zero"},
+    {sizeOfNonEmptyVector, "Size of non-empty vector must be greater than zero"}
   };
   constexpr size_t count = sizeof(tests) / sizeof (test_t);
   for (size_t i = 0; i < count; ++i) {

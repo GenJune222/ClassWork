@@ -11,6 +11,7 @@ namespace knk {
     Vector();
 
     bool isEmpty() const noexcept;
+    size_t getSize() const noexcept;
 
   private:
     T* data_;
@@ -19,7 +20,7 @@ namespace knk {
 }
 template < class T >
 bool knk::Vector < T >::isEmpty() const noexcept{
-  return false;
+  return !size_;
 }
 
 template < class T >
