@@ -5,10 +5,14 @@
 namespace knk
 {
   template <class T>
-  struct Vector {
-    T* data;
-    size_t size, capacity;
+  class Vector {
+  public:
+    ~Vector();
+    Vector();
+
+  private:
+    T* data_;
+    size_t size_, capacity_;
   };
 }
-
 #endif
