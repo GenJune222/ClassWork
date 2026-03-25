@@ -22,7 +22,9 @@ bool sizeOfEmptyVector(const char ** pname) {
 }
 
 bool sizeOfNonEmptyVector(const char ** pname) {
-  return false;
+  * pname = __func__;
+  Vector< int > v(2ull, 10);
+  return v.getSize() == 2ull;
 }
 
 int main() {
