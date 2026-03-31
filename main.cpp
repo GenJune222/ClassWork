@@ -23,8 +23,49 @@ bool sizeOfEmptyVector(const char ** pname) {
 
 bool sizeOfNonEmptyVector(const char ** pname) {
   * pname = __func__;
-  Vector< int > v(2ull, 10);
-  return v.getSize() == 2ull;
+  constexpr size_t size = 2ull;
+  Vector<int> v(size, 10);
+  return v.getSize() == size;
+}
+
+bool testCapacityEmpty(const char** p) {
+  *p=__func__;
+  return Vector<int>{}.getCapacity() == 0;
+}
+bool testCapacityAllocated(const char** p) {
+  *p=__func__;
+  return Vector<int>(5,0).getCapacity() == 5;
+}
+bool testPushBackGrows(const char** p) {
+  *p=__func__; Vector<int> v;
+  v.pushBack(1);
+  v.pushBack(2);
+  return v.getSize() == 2 && v.getCapacity() >= 2;
+}
+bool testResizeOnOverflow(const char** p) {
+  *p=__func__;
+  Vector<int> v;
+  size_t old = v.getCapacity();
+  for(size_t i = 0; i < old + 1; ++i) {
+    v.pushBack(0);
+  }
+  return v.getCapacity() > old;
+}
+bool testPopBackWorks(const char** p) {
+  *p=__func__;
+  Vector<int> v(3,0);
+  v.popBack();
+  return v.getSize() == 2;
+}
+bool testPopBackEmptyNoexcept(const char** p) {
+  *p=__func__;
+  Vector<int> v;
+  try {
+    v.popBack();
+    return true;
+  } catch(...) {
+    return false;
+  }
 }
 
 int main() {
