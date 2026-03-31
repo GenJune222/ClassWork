@@ -50,6 +50,11 @@ knk::Vector < T >::Vector(size_t size, const T& value):
 {};
 
 template < class T >
+size_t knk::Vector < T >::getSize() const noexcept {
+  return size_;
+}
+
+template < class T >
 size_t knk::Vector < T >::getCapacity() const noexcept {
   return capacity_;
 }
