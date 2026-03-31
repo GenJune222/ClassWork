@@ -9,12 +9,16 @@ namespace knk {
   public:
     ~Vector();
     Vector();
+    Vector(size_t size, const T & value);
+    Vector(const Vector<T> & rhs) = delete;
+    Vector<T> & operator=(const Vector<T> & rhs) = delete;
 
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
 
     void pushBack(const T&);
     void popBack();
+    size_t getCapacity() const noexcept;
 
   private:
     T* data_;
