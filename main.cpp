@@ -75,9 +75,17 @@ int main() {
     {testConstructAndDestruct, "Vector must be default constructable"},
     {testDefaultVectorIsEmpty, "Default constructed vector must be empty"},
     {sizeOfEmptyVector, "Size of empty vector must be zero"},
-    {sizeOfNonEmptyVector, "Size of non-empty vector must be greater than zero"}
+    {sizeOfNonEmptyVector, "Size of non-empty vector must be greater than zero"},
+
+    {testCapacityEmpty, "Capacity of empty vector must be 0"},
+    {testCapacityAllocated, "Capacity of allocated vector must match size"},
+    {testPushBackGrows, "pushBack must increase size and capacity"},
+    {testResizeOnOverflow, "pushBack must trigger resize on overflow"},
+    {testPopBackWorks, "popBack must decrease size"},
+    {testPopBackEmptyNoexcept, "popBack on empty vector must not throw"}
   };
   constexpr size_t count = sizeof(tests) / sizeof (test_t);
+  size_t failed = 0;
   for (size_t i = 0; i < count; ++i) {
     const char * testName = nullptr;
     bool r = tests[i].first(&testName);
@@ -85,6 +93,14 @@ int main() {
       std::cout << "[FAIL] " << "\n";
       std::cout << "Failed function: " << testName << "\n";
       std::cout << tests[i].second  << "\n";
+      ++failed;
     }
   }
+  if (failed == 0) {
+    std::cout << "[PASS] All " << count << " tests passed!\n";
+  } else {
+    std::cout << "[SUMMARY] " << failed << " of " << count << " tests failed\n";
+  }
+
+  return failed > 0 ? 1 : 0;
 }
