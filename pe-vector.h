@@ -32,13 +32,33 @@ namespace knk {
   };
 }
 
-template< class T>
-T& knk::Vector< T >::at(size_t id) {
-  if (id < getSize()) {
-    return data_[id];
-  }
-  throw std::logic_error("id > size");
+template<class T>
+T &knk::Vector<T>::at(size_t id) {
+  const Vector<T> *cthis = this;
+  const T &cr = cthis->at(id);
+  T &r = const_cast<T &>(cr);
+  return r;
 }
+
+template<class T>
+const T &knk::Vector<T>::at(size_t id) const {
+  if (id < getSize()) {
+    return (*this)[id];
+  }
+  throw std::out_of_range("id out of bound");
+}
+
+template< class T >
+T& knk::Vector< T >::operator[](size_t id) noexcept {
+  return const_cast< T& >((*static_cast< const Vector< T >* >(this))[id]);
+  //return data_[id];
+}
+
+template< class T >
+const T& knk::Vector< T >::operator[](size_t id) const noexcept {
+  return data_[id];
+}
+
 template< class T >
 knk::Vector< T >::Vector(const Vector< T >& rhs):
   Vector(rhs.getSize())
@@ -47,7 +67,6 @@ knk::Vector< T >::Vector(const Vector< T >& rhs):
     data_[i] = rhs.data_[i];
   }
 }
-
 
 template<class T>
 knk::Vector<T>::Vector(size_t size):
