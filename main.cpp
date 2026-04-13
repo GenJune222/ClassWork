@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "pe-vector.h"
 
 using knk::Vector;
@@ -12,7 +13,7 @@ bool testConstructAndDestruct(const char ** pname) {
 bool testDefaultVectorIsEmpty(const char ** pname) {
   * pname = __func__;
   Vector< int > v;
-  return v.isEmpty(); // && (!v.getSize()) <- можно, но не нужно. Старые тесты - священная корова
+  return v.isEmpty();
 }
 
 bool sizeOfEmptyVector(const char ** pname) {
@@ -28,22 +29,23 @@ bool sizeOfNonEmptyVector(const char ** pname) {
   return v.getSize() == size;
 }
 
-bool testCapacityEmpty(const char** p) {
-  *p=__func__;
+bool testCapacityEmpty(const char** pname) {
+  * pname = __func__;
   return Vector<int>{}.getCapacity() == 0;
 }
-bool testCapacityAllocated(const char** p) {
-  *p=__func__;
+bool testCapacityAllocated(const char** pname) {
+  * pname = __func__;
   return Vector<int>(5,0).getCapacity() == 5;
 }
-bool testPushBackGrows(const char** p) {
-  *p=__func__; Vector<int> v;
+bool testPushBackGrows(const char** pname) {
+  * pname = __func__;
+  Vector<int> v;
   v.pushBack(1);
   v.pushBack(2);
   return v.getSize() == 2 && v.getCapacity() >= 2;
 }
-bool testResizeOnOverflow(const char** p) {
-  *p=__func__;
+bool testResizeOnOverflow(const char** pname) {
+  * pname = __func__;
   Vector<int> v;
   size_t old = v.getCapacity();
   for(size_t i = 0; i < old + 1; ++i) {
@@ -51,14 +53,14 @@ bool testResizeOnOverflow(const char** p) {
   }
   return v.getCapacity() > old;
 }
-bool testPopBackWorks(const char** p) {
-  *p=__func__;
+bool testPopBackWorks(const char** pname) {
+  * pname = __func__;
   Vector<int> v(3,0);
   v.popBack();
   return v.getSize() == 2;
 }
-bool testPopBackEmptyNoexcept(const char** p) {
-  *p=__func__;
+bool testPopBackEmptyNoexcept(const char** pname) {
+  * pname = __func__;
   Vector<int> v;
   try {
     v.popBack();
@@ -66,6 +68,53 @@ bool testPopBackEmptyNoexcept(const char** p) {
   } catch(...) {
     return false;
   }
+}
+
+bool testElementCheckedAccess(const char **pname) {
+  *pname = __func__;
+  Vector<int> v;
+  //v.pushBack(2);
+  try {
+    int &r = v.at(0);
+    return r == 2;
+  } catch (...) {
+    return false;
+  }
+}
+
+bool testElementCheckedOutOfBoundAccess(const char **pname) {
+  *pname = __func__;
+  Vector<int> v;
+  try {
+    v.at(0);
+    return false;
+  } catch (const std::out_of_range &e) {
+    const char *text = e.what();
+    return !std::strcmp("id out of bound", text);
+  } catch (...) {
+    return false;
+  }
+}
+
+
+bool testCopyConstructor(const char **pname) {
+  *pname = __func__;
+  Vector<int> v(10, 2);
+  v.pushBack(1);
+  v.pushBack(2);
+  Vector<int> yav = v;
+  if (!v.isEmpty() && !yav.isEmpty()) {
+    throw std::logic_error("Vectors expected to be non-empty");
+  }
+  bool isEqual = yav.getSize() == v.getSize();
+  for (size_t i = 0; isEqual && i < v.getSize(); i++) {
+    try {
+      isEqual = v.at(i) == yav.at(i);
+    } catch (...) {
+      return false;
+    }
+  }
+  return isEqual;
 }
 
 int main() {
@@ -82,13 +131,27 @@ int main() {
     {testPushBackGrows, "pushBack must increase size and capacity"},
     {testResizeOnOverflow, "pushBack must trigger resize on overflow"},
     {testPopBackWorks, "popBack must decrease size"},
-    {testPopBackEmptyNoexcept, "popBack on empty vector must not throw"}
+    {testPopBackEmptyNoexcept, "popBack on empty vector must not throw"},
+
+    {testElementCheckedAccess, "Inbound access must return lvalue reference"},
+    {testElementCheckedOutOfBoundAccess, "Out of bound access must generate exception"},
+    {testCopyConstructor, "Copied vector must be equal to original"}
   };
   constexpr size_t count = sizeof(tests) / sizeof (test_t);
   size_t failed = 0;
   for (size_t i = 0; i < count; ++i) {
     const char * testName = nullptr;
-    bool r = tests[i].first(&testName);
+
+    bool r = false;
+    try {
+      r = tests[i].first(&testName);
+    } catch (const std::logic_error &e) {
+      std::cout << "[NOT RUN] " << testName << "\n";
+      std::cout << "\t" << "Reason: " << e.what() << "\n";
+      failed++;
+      continue;
+    }
+
     if (!r) {
       std::cout << "[FAIL] " << "\n";
       std::cout << "Failed function: " << testName << "\n";
