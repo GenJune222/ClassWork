@@ -163,8 +163,8 @@ int main() {
     {testElementCheckedAccess, "Inbound access must return lvalue reference"},
     {testElementCheckedOutOfBoundAccess, "Out of bound access must generate exception"},
     {testCopyConstructor, "Copied vector must be equal to original"},
-  { testElementCheckConstAccess, "same as checkaccess" },
-  { testElementCheckOutOfBoundConstAccess, "same as checkbound" }
+    { testElementCheckConstAccess, "same as checkaccess" },
+    { testElementCheckOutOfBoundConstAccess, "same as checkbound" }
   };
   constexpr size_t count = sizeof(tests) / sizeof (test_t);
   size_t failed = 0;

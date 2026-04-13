@@ -9,16 +9,30 @@ namespace knk {
   public:
     ~Vector();
     Vector();
-    Vector(size_t size, const T & value);
 
+    //написать тесты
+    Vector(size_t size, const T & value);
     Vector(const Vector< T > & rhs);
     Vector(Vector< T > && rhs) noexcept;
     Vector< T >& operator=(const Vector< T >& rhs);
     Vector< T >& operator=(Vector< T >&& rhs) noexcept;
     void swap(Vector < T >& rhs) noexcept;
 
+    //использовать копи энд своп (Classwork)
+    void insert(size_t id, const T& t);
+    void erase(size_t id);
+    void insert(size_t id, const Vector< T >& rhs, size_t beg, size_t and); //даже если рхс равен зису должен корректно
+    void erase(size_t beg, size_t end); //до указаного айди не включая
+
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
+
+    //Dz
+    //Реализовать итераторы конст не конст вектора(random access), сами итераторы не тестируем
+    //Придумать по 3 insert/erase, но с итераторами (vsego 6)
+    struct VectorIter {};
+    template< class FwdIter >
+    void insert(VectorIter pos, FwdIter begin, FwdIter end);
 
     void pushBack(const T&);
     void popBack() noexcept;
