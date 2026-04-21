@@ -144,6 +144,47 @@ bool testCopyConstructor(const char **pname) {
   return isEqual;
 }
 
+bool testCtorSizeValue(const char** pname) {
+  *pname = __func__;
+  Vector<int> v(3, 42);
+  return v.getSize() == 3 && v[0] == 42 && v[1] == 42 && v[2] == 42;
+}
+
+bool testCopyCtor(const char** pname) {
+  *pname = __func__;
+  Vector<int> a(2, 10); a.pushBack(20);
+  Vector<int> b(a);
+  return b.getSize() == 3 && b[2] == 20 && a[0] == b[0];
+}
+
+bool testMoveCtor(const char** pname) {
+  *pname = __func__;
+  Vector<int> a(2, 5);
+  Vector<int> b(std::move(a));
+  return b.getSize() == 2 && b[0] == 5 && a.isEmpty();
+}
+
+bool testCopyAssign(const char** pname) {
+  *pname = __func__;
+  Vector<int> a(2, 100), b(1, 0);
+  b = a;
+  return b.getSize() == 2 && b[0] == 100 && a.getSize() == 2;
+}
+
+bool testMoveAssign(const char** pname) {
+  *pname = __func__;
+  Vector<int> a(3, 7), b(10, 999);
+  b = std::move(a);
+  return b.getSize() == 3 && b[0] == 7 && a.isEmpty();
+}
+
+bool testSwap(const char** pname) {
+  *pname = __func__;
+  Vector<int> a(2, 1), b(3, 2);
+  a.swap(b);
+  return a.getSize() == 3 && a[0] == 2 && b.getSize() == 2 && b[0] == 1;
+}
+
 int main() {
   using test_t = bool(*)(const char **);
   using case_t = std::pair< test_t, const char * >;
@@ -164,7 +205,14 @@ int main() {
     {testElementCheckedOutOfBoundAccess, "Out of bound access must generate exception"},
     {testCopyConstructor, "Copied vector must be equal to original"},
     { testElementCheckConstAccess, "same as checkaccess" },
-    { testElementCheckOutOfBoundConstAccess, "same as checkbound" }
+    { testElementCheckOutOfBoundConstAccess, "same as checkbound" },
+
+    {testCtorSizeValue, "Constructor(size,value) fills correctly"},
+    {testCopyCtor, "Copy constructor creates independent copy"},
+    {testMoveCtor, "Move constructor transfers resources"},
+    {testCopyAssign, "Copy assignment works correctly"},
+    {testMoveAssign, "Move assignment transfers resources"},
+    {testSwap, "Swap exchanges vector contents"}
   };
   constexpr size_t count = sizeof(tests) / sizeof (test_t);
   size_t failed = 0;
