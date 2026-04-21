@@ -5,202 +5,202 @@
 
 namespace knk {
   template< class T >
-  struct Viter {
+  struct VIter {
     T* p;
-    Viter(T* ptr = nullptr);
+    VIter(T* ptr = nullptr);
     T& operator*() const;
-    Viter< T >& operator++();
-    Viter< T > operator++(int);
-    Viter< T >& operator--();
-    Viter< T > operator--(int);
-    Viter< T >& operator+=(size_t n);
-    Viter< T >& operator-=(size_t n);
-    Viter< T > operator+(size_t n) const;
-    Viter< T > operator-(size_t n) const;
-    long long operator-(const Viter< T >& other) const;
-    bool operator==(const Viter< T >& other) const;
-    bool operator!=(const Viter< T >& other) const;
-    bool operator<(const Viter< T >& other) const;
+    VIter< T >& operator++();
+    VIter< T > operator++(int);
+    VIter< T >& operator--();
+    VIter< T > operator--(int);
+    VIter< T >& operator+=(size_t n);
+    VIter< T >& operator-=(size_t n);
+    VIter< T > operator+(size_t n) const;
+    VIter< T > operator-(size_t n) const;
+    long long operator-(const VIter< T >& other) const;
+    bool operator==(const VIter< T >& other) const;
+    bool operator!=(const VIter< T >& other) const;
+    bool operator<(const VIter< T >& other) const;
   };
 
   template< class T >
-  struct Vciter {
+  struct VCIter {
     const T* p;
-    Vciter(const T* ptr = nullptr);
-    Vciter(const Viter< T >& other);
+    VCIter(const T* ptr = nullptr);
+    VCIter(const VIter< T >& other);
     const T& operator*() const;
-    Vciter< T >& operator++();
-    Vciter< T > operator++(int);
-    Vciter< T >& operator--();
-    Vciter< T > operator--(int);
-    Vciter< T >& operator+=(size_t n);
-    Vciter< T >& operator-=(size_t n);
-    Vciter< T > operator+(size_t n) const;
-    Vciter< T > operator-(size_t n) const;
-    long long operator-(const Vciter< T >& other) const;
-    bool operator==(const Vciter< T >& other) const;
-    bool operator!=(const Vciter< T >& other) const;
-    bool operator<(const Vciter< T >& other) const;
+    VCIter< T >& operator++();
+    VCIter< T > operator++(int);
+    VCIter< T >& operator--();
+    VCIter< T > operator--(int);
+    VCIter< T >& operator+=(size_t n);
+    VCIter< T >& operator-=(size_t n);
+    VCIter< T > operator+(size_t n) const;
+    VCIter< T > operator-(size_t n) const;
+    long long operator-(const VCIter< T >& other) const;
+    bool operator==(const VCIter< T >& other) const;
+    bool operator!=(const VCIter< T >& other) const;
+    bool operator<(const VCIter< T >& other) const;
   };
 
   template< class T >
-  knk::Viter< T >::Viter(T* ptr):
+  knk::VIter< T >::VIter(T* ptr):
     p(ptr)
   {}
 
   template< class T >
-  T& knk::Viter< T >::operator*() const {
+  T& knk::VIter< T >::operator*() const {
     return *p;
   }
 
   template< class T >
-  knk::Viter< T >& knk::Viter< T >::operator++() {
+  knk::VIter< T >& knk::VIter< T >::operator++() {
     ++p;
     return *this;
   }
 
   template< class T >
-  knk::Viter< T > knk::Viter< T >::operator++(int) {
-    Viter tmp = *this;
+  knk::VIter< T > knk::VIter< T >::operator++(int) {
+    VIter tmp = *this;
     ++p;
     return tmp;
   }
 
   template< class T >
-  knk::Viter< T >& knk::Viter< T >::operator--() {
+  knk::VIter< T >& knk::VIter< T >::operator--() {
     --p;
     return *this;
   }
 
   template< class T >
-  knk::Viter< T > knk::Viter< T >::operator--(int) {
-    Viter tmp = *this;
+  knk::VIter< T > knk::VIter< T >::operator--(int) {
+    VIter tmp = *this;
     --p;
     return tmp;
   }
 
   template< class T >
-  knk::Viter< T >& knk::Viter< T >::operator+=(size_t n) {
+  knk::VIter< T >& knk::VIter< T >::operator+=(size_t n) {
     p += n;
     return *this;
   }
 
   template< class T >
-  knk::Viter< T >& knk::Viter< T >::operator-=(size_t n) {
+  knk::VIter< T >& knk::VIter< T >::operator-=(size_t n) {
     p -= n;
     return *this;
   }
 
   template< class T >
-  knk::Viter< T > knk::Viter< T >::operator+(size_t n) const {
+  knk::VIter< T > knk::VIter< T >::operator+(size_t n) const {
     return Viter(p + n);
   }
 
   template< class T >
-  knk::Viter< T > knk::Viter< T >::operator-(size_t n) const {
+  knk::VIter< T > knk::VIter< T >::operator-(size_t n) const {
     return Viter(p - n);
   }
 
   template< class T >
-  long long knk::Viter< T >::operator-(const Viter< T >& other) const {
+  long long knk::VIter< T >::operator-(const VIter< T >& other) const {
     return p - other.p;
   }
 
   template< class T >
-  bool knk::Viter< T >::operator==(const Viter< T >& other) const {
+  bool knk::VIter< T >::operator==(const VIter< T >& other) const {
     return p == other.p;
   }
 
   template< class T >
-  bool knk::Viter< T >::operator!=(const Viter< T >& other) const {
+  bool knk::VIter< T >::operator!=(const VIter< T >& other) const {
     return p != other.p;
   }
 
   template< class T >
-  bool knk::Viter< T >::operator<(const Viter< T >& other) const {
+  bool knk::VIter< T >::operator<(const VIter< T >& other) const {
     return p < other.p;
   }
 
   template< class T >
-  knk::Vciter< T >::Vciter(const T* ptr):
+  knk::VCIter< T >::VCIter(const T* ptr):
     p(ptr)
   {}
 
   template< class T >
-  knk::Vciter< T >::Vciter(const Viter< T >& other):
+  knk::VCIter< T >::VCIter(const VIter< T >& other):
     p(other.p)
   {}
 
   template< class T >
-  const T& knk::Vciter< T >::operator*() const {
+  const T& knk::VCIter< T >::operator*() const {
     return *p;
   }
 
   template< class T >
-  knk::Vciter< T >& knk::Vciter< T >::operator++() {
+  knk::VCIter< T >& knk::VCIter< T >::operator++() {
     ++p;
     return *this;
   }
 
   template< class T >
-  knk::Vciter< T > knk::Vciter< T >::operator++(int) {
-    Vciter tmp = *this;
+  knk::VCIter< T > knk::VCIter< T >::operator++(int) {
+    VCIter tmp = *this;
     ++p;
     return tmp;
   }
 
   template< class T >
-  knk::Vciter< T >& knk::Vciter< T >::operator--() {
+  knk::VCIter< T >& knk::VCIter< T >::operator--() {
     --p;
     return *this;
   }
 
   template< class T >
-  knk::Vciter< T > knk::Vciter< T >::operator--(int) {
-    Vciter tmp = *this;
+  knk::VCIter< T > knk::VCIter< T >::operator--(int) {
+    VCIter tmp = *this;
     --p;
     return tmp;
   }
 
   template< class T >
-  knk::Vciter< T >& knk::Vciter< T >::operator+=(size_t n) {
+  knk::VCIter< T >& knk::VCIter< T >::operator+=(size_t n) {
     p += n;
     return *this;
   }
 
   template< class T >
-  knk::Vciter< T >& knk::Vciter< T >::operator-=(size_t n) {
+  knk::VCIter< T >& knk::VCIter< T >::operator-=(size_t n) {
     p -= n;
     return *this;
   }
 
   template< class T >
-  knk::Vciter< T > knk::Vciter< T >::operator+(size_t n) const {
+  knk::VCIter< T > knk::VCIter< T >::operator+(size_t n) const {
     return Vciter(p + n);
   }
 
   template< class T >
-  knk::Vciter< T > knk::Vciter< T >::operator-(size_t n) const {
+  knk::VCIter< T > knk::VCIter< T >::operator-(size_t n) const {
     return Vciter(p - n);
   }
 
   template< class T >
-  long long knk::Vciter< T >::operator-(const Vciter< T >& other) const {
+  long long knk::VCIter< T >::operator-(const VCIter< T >& other) const {
     return p - other.p;
   }
 
   template< class T >
-  bool knk::Vciter< T >::operator==(const Vciter< T >& other) const {
+  bool knk::VCIter< T >::operator==(const VCIter< T >& other) const {
     return p == other.p;
   }
 
   template< class T >
-  bool knk::Vciter< T >::operator!=(const Vciter< T >& other) const {
+  bool knk::VCIter< T >::operator!=(const VCIter< T >& other) const {
     return p != other.p;
   }
 
   template< class T >
-  bool knk::Vciter< T >::operator<(const Vciter< T >& other) const {
+  bool knk::VCIter< T >::operator<(const VCIter< T >& other) const {
     return p < other.p;
   };
 }
