@@ -2,6 +2,7 @@
 #define PE_VECTOR_H
 #include <cstddef>
 #include <stdexcept>
+#include "pe-iterators.h"
 
 namespace knk {
   template < class T >
@@ -25,13 +26,6 @@ namespace knk {
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
 
-    //Dz
-    //Реализовать итераторы конст не конст вектора(random access), сами итераторы не тестируем
-    //Придумать по 3 insert/erase, но с итераторами (vsego 6)
-    struct VectorIter {};
-    template< class FwdIter >
-    void insert(VectorIter pos, FwdIter begin, FwdIter end);
-
     void pushBack(const T&);
     void popBack() noexcept;
     void pushFront(const T& v);
@@ -41,6 +35,22 @@ namespace knk {
     const T& operator[](size_t id) const noexcept;
     T& at(size_t id);
     const T& at(size_t id) const;
+
+    VIter < T > begin() noexcept;
+    VIter< T > end() noexcept;
+    VIter< T > iter(size_t idx) noexcept;
+
+    VCIter< T > cbegin() const noexcept;
+    VCIter< T > cend() const noexcept;
+    VCIter< T > citer(size_t idx) const noexcept;
+
+    VIter< T > insert(VIter< T > pos, const T& val);
+    VIter< T > insert(VIter< T > pos, VCIter< T > begin, VCIter< T > end);
+    VIter< T > insert(VIter< T > pos, const T& val, size_t k);
+
+    VIter< T > erase(VIter< T > pos);
+    VIter< T > erase(VIter< T > begin, VIter< T > end);
+    VIter< T > erase(VIter< T > pos, size_t k);
 
   private:
     T* data_;
@@ -189,13 +199,13 @@ void knk::Vector < T >::popBack() noexcept {
 }
 
 template< class T >
-void knk::Vector< T >::pushFront(const T &v) {
-  Vector< T > v(getSize() + 1);
-  v[0] = v;
-  for (size_t i = 0; i < v.getSize(); ++i) {
-    v[i] = (*this)[i - 1];
+void knk::Vector< T >::pushFront(const T &val) {
+  Vector< T > tmp(size_ + 1);
+  tmp.data_[0] = val;
+  for (size_t i = 0; i < size_; ++i) {
+    tmp.data_[i + 1] = data_[i];
   }
-  swap(v);
+  swap(tmp);
 }
 
 
@@ -253,5 +263,133 @@ void knk::Vector<T>::erase(size_t beg, size_t end) {
     for (size_t i = end; i < size_; ++i) tmp.data_[i - erase_sz] = data_[i];
     swap(tmp);
 }
+
+template<class T>
+VIter<T> Vector<T>::begin() noexcept {
+  return VIter<T>(data_);
+}
+
+template<class T>
+VIter<T> Vector<T>::end() noexcept {
+  return VIter<T>(data_ + size_);
+}
+
+template<class T>
+VIter<T> Vector<T>::iter(size_t idx) noexcept {
+  return VIter<T>(data_ + idx);
+}
+
+template<class T>
+VCIter<T> Vector<T>::cbegin() const noexcept {
+  return VCIter<T>(data_);
+}
+
+template<class T>
+VCIter<T> Vector<T>::cend() const noexcept {
+  return VCIter<T>(data_ + size_);
+}
+
+template<class T>
+VCIter<T> Vector<T>::citer(size_t idx) const noexcept {
+  return VCIter<T>(data_ + idx);
+}
+
+template<class T>
+VIter<T> Vector<T>::insert(VIter<T> pos, const T &val) {
+  size_t index = pos.p - data_;
+  insert(index, val);
+  return VIter<T>(data_ + index);
+}
+
+template<class T>
+VIter<T> Vector<T>::insert(VIter<T> pos, VCIter<T> beg, VCIter<T> end) {
+  size_t index = pos.p - data_;
+  size_t count = end.p - beg.p;
+
+  if (count == 0) {
+    return pos;
+  }
+
+  Vector<T> temp;
+
+  for (size_t i = 0; i < index; ++i) {
+    temp.pushBack(data_[i]);
+  }
+
+  for (size_t i = 0; i < count; ++i) {
+    temp.pushBack(*(beg.p + i));
+  }
+
+  for (size_t i = index; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+
+  swap(temp);
+  return VIter<T>(data_ + index);
+}
+
+template<class T>
+VIter<T> Vector<T>::insert(VIter<T> pos, const T &val, size_t k) {
+  if (k == 0) {
+    return pos;
+  }
+
+  size_t index = pos.p - data_;
+
+  Vector<T> temp;
+
+  for (size_t i = 0; i < index; ++i) {
+    temp.pushBack(data_[i]);
+  }
+
+  for (size_t i = 0; i < k; ++i) {
+    temp.pushBack(val);
+  }
+
+  for (size_t i = index; i < size_; ++i) {
+    temp.pushBack(data_[i]);
+  }
+
+  swap(temp);
+  return VIter<T>(data_ + index);
+}
+
+template<class T>
+VIter<T> Vector<T>::erase(VIter<T> pos) {
+  size_t index = pos.p - data_;
+  erase(index);
+  return VIter<T>(data_ + index);
+}
+
+template<class T>
+VIter<T> Vector<T>::erase(VIter<T> beg, VIter<T> end) {
+  size_t first = beg.p - data_;
+  size_t last = end.p - data_;
+
+  if (first >= last) {
+    return end;
+  }
+
+  erase(first, last);
+  return VIter<T>(data_ + first);
+}
+
+template<class T>
+VIter<T> Vector<T>::erase(VIter<T> pos, size_t k) {
+  size_t index = pos.p - data_;
+
+  if (k == 0) {
+    return pos;
+  }
+
+  if (index + k > size_) {
+    k = size_ - index;
+  }
+
+  erase(index, index + k);
+  return VIter<T>(data_ + index);
+}
+
+#endif
 
 #endif
