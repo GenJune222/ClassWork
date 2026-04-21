@@ -10,7 +10,6 @@ namespace knk {
     ~Vector();
     Vector();
 
-    //написать тесты
     Vector(size_t size, const T & value);
     Vector(const Vector< T > & rhs);
     Vector(Vector< T > && rhs) noexcept;
@@ -18,11 +17,10 @@ namespace knk {
     Vector< T >& operator=(Vector< T >&& rhs) noexcept;
     void swap(Vector < T >& rhs) noexcept;
 
-    //использовать копи энд своп (Classwork)
     void insert(size_t id, const T& t);
     void erase(size_t id);
-    void insert(size_t id, const Vector< T >& rhs, size_t beg, size_t and); //даже если рхс равен зису должен корректно
-    void erase(size_t beg, size_t end); //до указаного айди не включая
+    void insert(size_t id, const Vector< T >& rhs, size_t beg, size_t end);
+    void erase(size_t beg, size_t end);
 
     bool isEmpty() const noexcept;
     size_t getSize() const noexcept;
@@ -200,5 +198,60 @@ void knk::Vector< T >::pushFront(const T &v) {
   swap(v);
 }
 
+
+template<class T>
+void knk::Vector<T>::insert(size_t id, const T& t) {
+    if (id > size_) throw std::out_of_range("id out of bound");
+    Vector<T> tmp(size_ + 1);
+    for (size_t i = 0; i < id; ++i) tmp.data_[i] = data_[i];
+    tmp.data_[id] = t;
+    for (size_t i = id; i < size_; ++i) tmp.data_[i + 1] = data_[i];
+    swap(tmp);
+}
+
+template<class T>
+void knk::Vector<T>::erase(size_t id) {
+    if (id >= size_) throw std::out_of_range("id out of bound");
+    Vector<T> tmp(size_ - 1);
+    for (size_t i = 0; i < id; ++i) tmp.data_[i] = data_[i];
+    for (size_t i = id + 1; i < size_; ++i) tmp.data_[i - 1] = data_[i];
+    swap(tmp);
+}
+
+template<class T>
+void knk::Vector<T>::insert(size_t id, const Vector<T>& rhs, size_t beg, size_t end) {
+    if (id > size_ || beg > rhs.size_ || end > rhs.size_ || beg > end)
+        throw std::out_of_range("id out of bound");
+    size_t range_sz = end - beg;
+    if (range_sz == 0) return;
+
+    bool is_self = (this == &rhs);
+    Vector<T> buf;
+    if (is_self) {
+        buf = Vector<T>(range_sz);
+        for (size_t i = 0; i < range_sz; ++i) buf.data_[i] = data_[beg + i];
+    }
+
+    Vector<T> tmp(size_ + range_sz);
+    for (size_t i = 0; i < id; ++i) tmp.data_[i] = data_[i];
+    if (is_self) {
+        for (size_t i = 0; i < range_sz; ++i) tmp.data_[id + i] = buf.data_[i];
+    } else {
+        for (size_t i = 0; i < range_sz; ++i) tmp.data_[id + i] = rhs.data_[beg + i];
+    }
+    for (size_t i = id; i < size_; ++i) tmp.data_[id + range_sz + (i - id)] = data_[i];
+    swap(tmp);
+}
+
+template<class T>
+void knk::Vector<T>::erase(size_t beg, size_t end) {
+    if (beg > end || end > size_) throw std::out_of_range("id out of bound");
+    if (beg == end) return;
+    size_t erase_sz = end - beg;
+    Vector<T> tmp(size_ - erase_sz);
+    for (size_t i = 0; i < beg; ++i) tmp.data_[i] = data_[i];
+    for (size_t i = end; i < size_; ++i) tmp.data_[i - erase_sz] = data_[i];
+    swap(tmp);
+}
 
 #endif
