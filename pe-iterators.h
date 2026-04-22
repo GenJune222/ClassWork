@@ -93,12 +93,12 @@ namespace knk {
 
   template< class T >
   knk::VIter< T > knk::VIter< T >::operator+(size_t n) const {
-    return Viter(p + n);
+    return knk::VIter<T>(p + n);
   }
 
   template< class T >
   knk::VIter< T > knk::VIter< T >::operator-(size_t n) const {
-    return Viter(p - n);
+    return knk::VIter<T>(p - n);
   }
 
   template< class T >
@@ -176,12 +176,12 @@ namespace knk {
 
   template< class T >
   knk::VCIter< T > knk::VCIter< T >::operator+(size_t n) const {
-    return Vciter(p + n);
+    return knk::VCIter<T>(p + n);
   }
 
   template< class T >
   knk::VCIter< T > knk::VCIter< T >::operator-(size_t n) const {
-    return Vciter(p - n);
+    return knk::VCIter<T>(p - n);
   }
 
   template< class T >

@@ -210,186 +210,198 @@ void knk::Vector< T >::pushFront(const T &val) {
 
 
 template<class T>
-void knk::Vector<T>::insert(size_t id, const T& t) {
-    if (id > size_) throw std::out_of_range("id out of bound");
-    Vector<T> tmp(size_ + 1);
-    for (size_t i = 0; i < id; ++i) tmp.data_[i] = data_[i];
-    tmp.data_[id] = t;
-    for (size_t i = id; i < size_; ++i) tmp.data_[i + 1] = data_[i];
-    swap(tmp);
+void knk::Vector<T>::insert(size_t id, const T &t) {
+  if (id > size_) {
+    throw std::out_of_range("id out of bound");
+  }
+  Vector<T> tmp(size_ + 1);
+  for (size_t i = 0; i < id; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  tmp.data_[id] = t;
+  for (size_t i = id; i < size_; ++i) {
+    tmp.data_[i + 1] = data_[i];
+  }
+  swap(tmp);
 }
 
 template<class T>
 void knk::Vector<T>::erase(size_t id) {
-    if (id >= size_) throw std::out_of_range("id out of bound");
-    Vector<T> tmp(size_ - 1);
-    for (size_t i = 0; i < id; ++i) tmp.data_[i] = data_[i];
-    for (size_t i = id + 1; i < size_; ++i) tmp.data_[i - 1] = data_[i];
-    swap(tmp);
+  if (id >= size_) {
+    throw std::out_of_range("id out of bound");
+  }
+  Vector<T> tmp(size_ - 1);
+  for (size_t i = 0; i < id; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = id + 1; i < size_; ++i) {
+    tmp.data_[i - 1] = data_[i];
+  }
+  swap(tmp);
 }
 
 template<class T>
-void knk::Vector<T>::insert(size_t id, const Vector<T>& rhs, size_t beg, size_t end) {
-    if (id > size_ || beg > rhs.size_ || end > rhs.size_ || beg > end)
-        throw std::out_of_range("id out of bound");
-    size_t range_sz = end - beg;
-    if (range_sz == 0) return;
+void knk::Vector<T>::insert(size_t id, const Vector<T> &rhs, size_t beg, size_t end) {
+  if (id > size_ || beg > rhs.size_ || end > rhs.size_ || beg > end) {
+    throw std::out_of_range("id out of bound");
+  }
+  size_t range_sz = end - beg;
+  if (range_sz == 0) return;
 
-    bool is_self = (this == &rhs);
-    Vector<T> buf;
-    if (is_self) {
-        buf = Vector<T>(range_sz);
-        for (size_t i = 0; i < range_sz; ++i) buf.data_[i] = data_[beg + i];
+  bool is_self = (this == &rhs);
+  Vector<T> buf;
+  if (is_self) {
+    buf = Vector<T>(range_sz);
+    for (size_t i = 0; i < range_sz; ++i) {
+      buf.data_[i] = data_[beg + i];
     }
+  }
 
-    Vector<T> tmp(size_ + range_sz);
-    for (size_t i = 0; i < id; ++i) tmp.data_[i] = data_[i];
-    if (is_self) {
-        for (size_t i = 0; i < range_sz; ++i) tmp.data_[id + i] = buf.data_[i];
-    } else {
-        for (size_t i = 0; i < range_sz; ++i) tmp.data_[id + i] = rhs.data_[beg + i];
+  Vector<T> tmp(size_ + range_sz);
+  for (size_t i = 0; i < id; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  if (is_self) {
+    for (size_t i = 0; i < range_sz; ++i) {
+      tmp.data_[id + i] = buf.data_[i];
     }
-    for (size_t i = id; i < size_; ++i) tmp.data_[id + range_sz + (i - id)] = data_[i];
-    swap(tmp);
+  } else {
+    for (size_t i = 0; i < range_sz; ++i) {
+      tmp.data_[id + i] = rhs.data_[beg + i];
+    }
+  }
+  for (size_t i = id; i < size_; ++i) {
+    tmp.data_[id + range_sz + (i - id)] = data_[i];
+  }
+  swap(tmp);
 }
 
 template<class T>
 void knk::Vector<T>::erase(size_t beg, size_t end) {
-    if (beg > end || end > size_) throw std::out_of_range("id out of bound");
-    if (beg == end) return;
-    size_t erase_sz = end - beg;
-    Vector<T> tmp(size_ - erase_sz);
-    for (size_t i = 0; i < beg; ++i) tmp.data_[i] = data_[i];
-    for (size_t i = end; i < size_; ++i) tmp.data_[i - erase_sz] = data_[i];
-    swap(tmp);
+  if (beg > end || end > size_) {
+    throw std::out_of_range("id out of bound");
+  }
+  if (beg == end) return;
+  size_t erase_sz = end - beg;
+  Vector<T> tmp(size_ - erase_sz);
+  for (size_t i = 0; i < beg; ++i) {
+    tmp.data_[i] = data_[i];
+  }
+  for (size_t i = end; i < size_; ++i) {
+    tmp.data_[i - erase_sz] = data_[i];
+  }
+  swap(tmp);
 }
 
 template<class T>
-VIter<T> Vector<T>::begin() noexcept {
-  return VIter<T>(data_);
+knk::VIter<T> knk::Vector<T>::begin() noexcept {
+  return knk::VIter<T>(data_);
 }
 
 template<class T>
-VIter<T> Vector<T>::end() noexcept {
-  return VIter<T>(data_ + size_);
+knk::VIter<T> knk::Vector<T>::end() noexcept {
+  return knk::VIter<T>(data_ + size_);
 }
 
 template<class T>
-VIter<T> Vector<T>::iter(size_t idx) noexcept {
-  return VIter<T>(data_ + idx);
+knk::VIter<T> knk::Vector<T>::iter(size_t idx) noexcept {
+  return knk::VIter<T>(data_ + idx);
 }
 
 template<class T>
-VCIter<T> Vector<T>::cbegin() const noexcept {
-  return VCIter<T>(data_);
+knk::VCIter<T> knk::Vector<T>::cbegin() const noexcept {
+  return knk::VCIter<T>(data_);
 }
 
 template<class T>
-VCIter<T> Vector<T>::cend() const noexcept {
-  return VCIter<T>(data_ + size_);
+knk::VCIter<T> knk::Vector<T>::cend() const noexcept {
+  return knk::VCIter<T>(data_ + size_);
 }
 
 template<class T>
-VCIter<T> Vector<T>::citer(size_t idx) const noexcept {
-  return VCIter<T>(data_ + idx);
+knk::VCIter<T> knk::Vector<T>::citer(size_t idx) const noexcept {
+  return knk::VCIter<T>(data_ + idx);
 }
 
 template<class T>
-VIter<T> Vector<T>::insert(VIter<T> pos, const T &val) {
+knk::VIter<T> knk::Vector<T>::insert(knk::VIter<T> pos, const T &val) {
   size_t index = pos.p - data_;
   insert(index, val);
-  return VIter<T>(data_ + index);
+  return knk::VIter<T>(data_ + index);
 }
 
 template<class T>
-VIter<T> Vector<T>::insert(VIter<T> pos, VCIter<T> beg, VCIter<T> end) {
+knk::VIter<T> knk::Vector<T>::insert(knk::VIter<T> pos, knk::VCIter<T> beg, knk::VCIter<T> end) {
   size_t index = pos.p - data_;
   size_t count = end.p - beg.p;
 
   if (count == 0) {
     return pos;
   }
-
-  Vector<T> temp;
+  knk::Vector<T> temp;
 
   for (size_t i = 0; i < index; ++i) {
     temp.pushBack(data_[i]);
   }
-
   for (size_t i = 0; i < count; ++i) {
     temp.pushBack(*(beg.p + i));
   }
-
   for (size_t i = index; i < size_; ++i) {
     temp.pushBack(data_[i]);
   }
-
   swap(temp);
-  return VIter<T>(data_ + index);
+  return knk::VIter<T>(data_ + index);
 }
 
 template<class T>
-VIter<T> Vector<T>::insert(VIter<T> pos, const T &val, size_t k) {
+knk::VIter<T> knk::Vector<T>::insert(knk::VIter<T> pos, const T &val, size_t k) {
   if (k == 0) {
     return pos;
   }
-
   size_t index = pos.p - data_;
-
-  Vector<T> temp;
+  knk::Vector<T> temp;
 
   for (size_t i = 0; i < index; ++i) {
     temp.pushBack(data_[i]);
   }
-
   for (size_t i = 0; i < k; ++i) {
     temp.pushBack(val);
   }
-
   for (size_t i = index; i < size_; ++i) {
     temp.pushBack(data_[i]);
   }
-
   swap(temp);
-  return VIter<T>(data_ + index);
+  return knk::VIter<T>(data_ + index);
 }
 
 template<class T>
-VIter<T> Vector<T>::erase(VIter<T> pos) {
+knk::VIter<T> knk::Vector<T>::erase(knk::VIter<T> pos) {
   size_t index = pos.p - data_;
   erase(index);
-  return VIter<T>(data_ + index);
+  return knk::VIter<T>(data_ + index);
 }
 
 template<class T>
-VIter<T> Vector<T>::erase(VIter<T> beg, VIter<T> end) {
+knk::VIter<T> knk::Vector<T>::erase(knk::VIter<T> beg, knk::VIter<T> end) {
   size_t first = beg.p - data_;
   size_t last = end.p - data_;
-
   if (first >= last) {
     return end;
   }
-
   erase(first, last);
-  return VIter<T>(data_ + first);
+  return knk::VIter<T>(data_ + first);
 }
 
 template<class T>
-VIter<T> Vector<T>::erase(VIter<T> pos, size_t k) {
+knk::VIter<T> knk::Vector<T>::erase(knk::VIter<T> pos, size_t k) {
   size_t index = pos.p - data_;
-
   if (k == 0) {
     return pos;
   }
-
   if (index + k > size_) {
     k = size_ - index;
   }
-
   erase(index, index + k);
-  return VIter<T>(data_ + index);
+  return knk::VIter<T>(data_ + index);
 }
-
-#endif
-
 #endif
